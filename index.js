@@ -171,29 +171,33 @@ const fetchRepos = async (username) => {
 
 const gitData = async (e) => {
     e.preventDefault();
-    if(input.value !== "") {
+    if (input.value !== "") {
         username = input.value;
     }
 
-    if(username !== ""){
-        try{
+    if (username !== "") {
+        try {
             enableLoader();
             const data = await fetchData(username);
             const repos = await fetchRepos(username);
 
             isDataRetrieved = true;
             enableRepoPerPageDisplay();
-        }
-        catch(err){
-            throw new Error(err);
-            // console.log(err);
-        }
-        finally{
+        } catch (err) {
+            // Log the error
+            console.error('Error in gitData:', err);
+
+            // Handle the error or throw a new error
+            // You can customize this part based on your requirements
+            // For example, you might want to show an error message to the user
+            // or perform some specific actions based on the error type.
+            throw new Error('An error occurred while fetching data.');
+        } finally {
             disableLoader();
             input.value = "";
         }
     }
-}
+};
 
 form.addEventListener("submit", (e) => {
     gitData(e);
@@ -216,34 +220,44 @@ const disableRepoPerPageDisplay = () => {
     `;
 }
 
-reposPerPageDisplay.addEventListener("change", async() => {
+reposPerPageDisplay.addEventListener("change", async () => {
     const selectedValue = reposPerPageDisplay.value;
 
-    if(isDataRetrieved === true){
+    if (isDataRetrieved === true) {
         reposPerPage = parseInt(selectedValue);
         pageNumber = 1;
 
-        enableLoader();
-        await fetchRepos(username);
-        disableLoader();
-    }
-    else{
+        try {
+            enableLoader();
+            await fetchRepos(username);
+        } catch (error) {
+            console.error('Error fetching repositories:', error);
+            // Handle the error or show an error message to the user
+        } finally {
+            disableLoader();
+        }
+    } else {
         disableRepoPerPageDisplay();
     }
-
-})
+});
 
 pagination.addEventListener("click", async (e) => {
     const selectedValue = e.target.innerText;
 
-    if(selectedValue === "«") pageNumber = 1;
-    else if(selectedValue === "»") pageNumber = parseInt(numberOfPages);
+    if (selectedValue === "«") pageNumber = 1;
+    else if (selectedValue === "»") pageNumber = parseInt(numberOfPages);
     else pageNumber = parseInt(selectedValue);
 
-    enableLoader();
-    await fetchRepos(username);
-    disableLoader();
-})
+    try {
+        enableLoader();
+        await fetchRepos(username);
+    } catch (error) {
+        console.error('Error fetching repositories:', error);
+        // Handle the error or show an error message to the user
+    } finally {
+        disableLoader();
+    }
+});
 
 window.addEventListener('load', (e) => {
     disableLoader();
