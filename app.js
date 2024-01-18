@@ -28,7 +28,7 @@ app.post('/api/user', async (req, res) => {
         }
 
         const data = await response.json();
-        // console.log(data);
+        console.log("userData -> OK");
         res.json(data);
     }
     catch (error) {
@@ -52,6 +52,7 @@ app.post('/api/repos', async (req, res) => {
         }
 
         const data = await response.json();
+        console.log("reposData -> OK");
         res.json(data);
     } 
     catch (error) {
@@ -74,13 +75,13 @@ app.post('/api/languages', async (req, res) => {
         }
 
         const languagesData = await response.json();
+        console.log("languagesData -> OK");
         res.json(languagesData);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching languages data' });
     }
 });
 
-const port = 3000;
-app.listen(port, () => {
+app.listen(8080, () => {
     console.log(`Server is running on port ${port}`);
 });

@@ -9,7 +9,7 @@ const pagination = document.querySelector(".pagination");
 const reposPerPageDisplay = document.querySelector("#format");
 
 // const API_URL = "http://127.0.0.1:3000/";
-const API_URL = "https://fyle-wv7f.onrender.com/";
+const API_URL = "https://fyle-wv7f.onrender.com";
 const BASE_REPO_URL = "https://github.com/";
 
 let repositoriesDetails = [];
@@ -55,7 +55,7 @@ const createPagination = () => {
 }
 
 const fetchData = async (username) => {
-    const response = await fetch(`${API_URL}api/user`, {
+    const response = await fetch(`${API_URL}/api/user`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ const createCard = async ({ name, description, languages_url, git_url }) => {
 
     try {
         // Fetch languages data from the backend API
-        const response = await fetch(`${API_URL}api/languages`, {
+        const response = await fetch(`${API_URL}/api/languages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const fetchRepos = async (username) => {
     repositoriesDetails = [];
 
     try{
-        const response = await fetch(`${API_URL}api/repos`, {
+        const response = await fetch(`${API_URL}/api/repos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -187,10 +187,6 @@ const gitData = async (e) => {
             // Log the error
             console.error('Error in gitData:', err);
 
-            // Handle the error or throw a new error
-            // You can customize this part based on your requirements
-            // For example, you might want to show an error message to the user
-            // or perform some specific actions based on the error type.
             throw new Error('An error occurred while fetching data.');
         } finally {
             disableLoader();
