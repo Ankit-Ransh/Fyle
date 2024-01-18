@@ -1,3 +1,75 @@
+require('dotenv').config();
+
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
+
+const API = "https://api.github.com/users/";
+
+const app = express();
+app.use(express.json());
+app.use(cors()); // Allow all origins. Adjust as needed.
+
+const token = process.env.token;
+
+app.post('/api/user', async (req, res) => {
+    const { username } = req.body;
+    const apiUrl = `${API}${username}`;
+
+    try {
+        const response = await axios.get(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log("userData -> OK");
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching GitHub user data' });
+    }
+});
+
+app.post('/api/repos', async (req, res) => {
+    const { username, pageNumber, reposPerPage } = req.body;
+    const apiUrl = `${API}${username}/repos?page=${pageNumber}&per_page=${reposPerPage}`;
+
+    try {
+        const response = await axios.get(apiUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        console.log("reposData -> OK");
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching GitHub user repositories' });
+    }
+});
+
+app.post('/api/languages', async (req, res) => {
+    const { languagesUrl } = req.body;
+
+    try {
+        const response = await axios.get(languagesUrl, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        
+        console.log("languagesData -> OK");
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching languages data' });
+    }
+});
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
 // require('dotenv').config();
 
 // const express = require('express');
@@ -89,73 +161,3 @@
 // app.listen(8080, () => {
 //     console.log(`Server is running on port`);
 // });
-
-
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
-
-const API = "https://api.github.com/users/";
-
-const app = express();
-app.use(express.json());
-app.use(cors()); // Allow all origins. Adjust as needed.
-
-const token = process.env.token;
-
-app.post('/api/user', async (req, res) => {
-    const { username } = req.body;
-    const apiUrl = `${API}${username}`;
-
-    try {
-        const response = await axios.get(apiUrl, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching GitHub user data' });
-    }
-});
-
-app.post('/api/repos', async (req, res) => {
-    const { username, pageNumber, reposPerPage } = req.body;
-    const apiUrl = `${API}${username}/repos?page=${pageNumber}&per_page=${reposPerPage}`;
-
-    try {
-        const response = await axios.get(apiUrl, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching GitHub user repositories' });
-    }
-});
-
-app.post('/api/languages', async (req, res) => {
-    const { languagesUrl } = req.body;
-
-    try {
-        const response = await axios.get(languagesUrl, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        res.json(response.data);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching languages data' });
-    }
-});
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
