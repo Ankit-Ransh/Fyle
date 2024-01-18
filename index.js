@@ -178,16 +178,27 @@ const gitData = async (e) => {
     if (username !== "") {
         try {
             enableLoader();
-            const data = await fetchData(username);
-            const repos = await fetchRepos(username);
+            
+            // Wrap fetchData and fetchRepos calls in try-catch
+            try {
+                await fetchData(username);
+            } catch (error) {
+                console.error('Error in fetchData:', error);
+                throw new Error('An error occurred while fetching user data.');
+            }
+
+            try {
+                await fetchRepos(username);
+            } catch (error) {
+                console.error('Error in fetchRepos:', error);
+                throw new Error('An error occurred while fetching repositories.');
+            }
 
             isDataRetrieved = true;
             enableRepoPerPageDisplay();
         } catch (err) {
             // Log the error
             console.error('Error in gitData:', err);
-
-            throw new Error('An error occurred while fetching data.');
         } finally {
             disableLoader();
             input.value = "";
@@ -225,12 +236,17 @@ reposPerPageDisplay.addEventListener("change", async () => {
 
         try {
             enableLoader();
-            await fetchRepos(username);
+            // Wrap fetchRepos call in try-catch
+            try {
+                await fetchRepos(username);
+            } catch (error) {
+                console.error('Error fetching repositories:', error);
+                // Handle the error or show an error message to the user
+            } finally {
+                disableLoader();
+            }
         } catch (error) {
-            console.error('Error fetching repositories:', error);
-            // Handle the error or show an error message to the user
-        } finally {
-            disableLoader();
+            console.error('Error in reposPerPageDisplay change event:', error);
         }
     } else {
         disableRepoPerPageDisplay();
@@ -246,18 +262,32 @@ pagination.addEventListener("click", async (e) => {
 
     try {
         enableLoader();
-        await fetchRepos(username);
+        // Wrap fetchRepos call in try-catch
+        try {
+            await fetchRepos(username);
+        } catch (error) {
+            console.error('Error fetching repositories:', error);
+            // Handle the error or show an error message to the user
+        } finally {
+            disableLoader();
+        }
     } catch (error) {
-        console.error('Error fetching repositories:', error);
-        // Handle the error or show an error message to the user
-    } finally {
-        disableLoader();
+        console.error('Error in pagination click event:', error);
     }
 });
 
-window.addEventListener('load', (e) => {
-    disableLoader();
-    gitData(e);
+window.addEventListener('load', async (e) => {
+    try {
+        disableLoader();
+        // Wrap gitData call in try-catch
+        try {
+            await gitData(e);
+        } catch (error) {
+            console.error('Error in window load event:', error);
+        }
+    } catch (error) {
+        console.error('Error in window load event (outer):', error);
+    }
 });
 
 // const resetData = () => {
