@@ -8,7 +8,8 @@ const pagination = document.querySelector(".pagination");
 
 const reposPerPageDisplay = document.querySelector("#format");
 
-const API_URL = "http://127.0.0.1:3000/";
+// const API_URL = "http://127.0.0.1:3000/";
+const API_URL = "https://fyle-wv7f.onrender.com/";
 const BASE_REPO_URL = "https://github.com/";
 
 let repositoriesDetails = [];
