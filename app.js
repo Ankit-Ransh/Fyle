@@ -8,7 +8,15 @@ const API = "https://api.github.com/users/";
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // Allow all origins. Adjust as needed.
+
+// Specify CORS headers as needed
+const corsOptions = {
+    origin: 'https://fyle-bay.vercel.app', // Replace with your frontend domain
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
 
 const token = process.env.token;
 
@@ -20,6 +28,7 @@ app.post('/api/user', async (req, res) => {
         const response = await axios.get(apiUrl, {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json', // Add headers as needed
             },
         });
 
@@ -38,6 +47,7 @@ app.post('/api/repos', async (req, res) => {
         const response = await axios.get(apiUrl, {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json', // Add headers as needed
             },
         });
 
@@ -55,6 +65,7 @@ app.post('/api/languages', async (req, res) => {
         const response = await axios.get(languagesUrl, {
             headers: {
                 Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json', // Add headers as needed
             },
         });
         
@@ -69,6 +80,81 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+
+// require('dotenv').config();
+
+// const express = require('express');
+// const cors = require('cors');
+// const axios = require('axios');
+
+// const API = "https://api.github.com/users/";
+
+// const app = express();
+// app.use(express.json());
+// app.use(cors({
+//     origin: 'https://fyle-bay.vercel.app'
+// })); // Allow all origins. Adjust as needed.
+
+// const token = process.env.token;
+
+// app.post('/api/user', async (req, res) => {
+//     const { username } = req.body;
+//     const apiUrl = `${API}${username}`;
+
+//     try {
+//         const response = await axios.get(apiUrl, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//             },
+//         });
+
+//         console.log("userData -> OK");
+//         res.json(response.data);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error fetching GitHub user data' });
+//     }
+// });
+
+// app.post('/api/repos', async (req, res) => {
+//     const { username, pageNumber, reposPerPage } = req.body;
+//     const apiUrl = `${API}${username}/repos?page=${pageNumber}&per_page=${reposPerPage}`;
+
+//     try {
+//         const response = await axios.get(apiUrl, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//             },
+//         });
+
+//         console.log("reposData -> OK");
+//         res.json(response.data);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error fetching GitHub user repositories' });
+//     }
+// });
+
+// app.post('/api/languages', async (req, res) => {
+//     const { languagesUrl } = req.body;
+
+//     try {
+//         const response = await axios.get(languagesUrl, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//             },
+//         });
+        
+//         console.log("languagesData -> OK");
+//         res.json(response.data);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Error fetching languages data' });
+//     }
+// });
+
+// const PORT = process.env.PORT || 8080;
+// app.listen(PORT, () => {
+//     console.log(`Server is running on port ${PORT}`);
+// });
 
 // require('dotenv').config();
 
