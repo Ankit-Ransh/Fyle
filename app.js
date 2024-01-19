@@ -54,6 +54,9 @@ app.options('/api/languages', cors(corsOptions)); // preflight request for /api/
 const token = process.env.token;
 
 app.post('/api/user', async (req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
     const { username } = req.body;
     const apiUrl = `${API}${username}`;
     
@@ -75,6 +78,9 @@ app.post('/api/user', async (req, res) => {
 });
 
 app.post('/api/repos', async (req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
     const { username, pageNumber, reposPerPage } = req.body;
     const apiUrl = `${API}${username}/repos?page=${pageNumber}&per_page=${reposPerPage}`;
 
@@ -96,6 +102,9 @@ app.post('/api/repos', async (req, res) => {
 });
 
 app.post('/api/languages', async (req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
     const { languagesUrl } = req.body;
 
     try {
