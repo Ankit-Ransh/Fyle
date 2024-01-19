@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require("body-parser");
 const axios = require('axios');
 
 const API = "https://api.github.com/users/";
@@ -11,18 +12,47 @@ app.use(express.json());
 
 // Specify CORS headers as needed
 const corsOptions = {
-    origin: 'https://fyle-bay.vercel.app', // Replace with your frontend domain
+    origin: 'https://fyle-bay.vercel.app/', // Replace with your frontend domain
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
 
+// CORS middleware
+app.use((req, res, next) => {
+    // Replace '*' with the appropriate origin(s) or configure it dynamically
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    // Add other allowed methods as needed
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
+    // Add other allowed headers as needed
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    // Handle preflight request
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+
+    // Set cache-control headers to prevent caching
+    res.setHeader(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate"
+    );
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+
+    next();
+});
+
 const token = process.env.token;
 
 app.post('/api/user', async (req, res) => {
     const { username } = req.body;
     const apiUrl = `${API}${username}`;
+    
+    console.log(username,apiUrl);
 
     try {
         const response = await axios.get(apiUrl, {
@@ -42,6 +72,8 @@ app.post('/api/user', async (req, res) => {
 app.post('/api/repos', async (req, res) => {
     const { username, pageNumber, reposPerPage } = req.body;
     const apiUrl = `${API}${username}/repos?page=${pageNumber}&per_page=${reposPerPage}`;
+
+    console.log(req.body);
 
     try {
         const response = await axios.get(apiUrl, {
@@ -76,9 +108,8 @@ app.post('/api/languages', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.listen(8080, () => {
+    console.log(`Server is running on port`);
 });
 
 
