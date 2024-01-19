@@ -16,6 +16,7 @@ const corsOptions = {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204,
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
 
@@ -45,6 +46,10 @@ app.use((req, res, next) => {
 
     next();
 });
+
+app.options('/api/user', cors(corsOptions)); // preflight request for /api/user endpoint
+app.options('/api/repos', cors(corsOptions)); // preflight request for /api/repos endpoint
+app.options('/api/languages', cors(corsOptions)); // preflight request for /api/languages endpoint
 
 const token = process.env.token;
 
