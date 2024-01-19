@@ -8,7 +8,7 @@ const pagination = document.querySelector(".pagination");
 
 const reposPerPageDisplay = document.querySelector("#format");
 
-// const API_URL = "http://127.0.0.1:3000/";
+// const API_URL = "http://localhost:8080";
 const API_URL = "https://fyle-wv7f.onrender.com";
 const BASE_REPO_URL = "https://github.com/";
 
@@ -55,13 +55,16 @@ const createPagination = () => {
 }
 
 const fetchData = async (username) => {
-    const response = await fetch(`${API_URL}/api/user`, {
+    // console.log(`${API_URL}/auth/user`);
+    const response = await fetch(`${API_URL}/user/user`, {
         method: 'POST',
+        body: JSON.stringify({username}),
         headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: username })
     });
+
+    // console.log(response);
 
     if (!response.ok) throw new Error(response.statusText);
 
@@ -92,7 +95,7 @@ const createCard = async ({ name, description, languages_url, git_url }) => {
 
     try {
         // Fetch languages data from the backend API
-        const response = await fetch(`${API_URL}/api/languages`, {
+        const response = await fetch(`${API_URL}/languages/languages`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,12 +149,12 @@ const fetchRepos = async (username) => {
     repositoriesDetails = [];
 
     try{
-        const response = await fetch(`${API_URL}/api/repos`, {
+        const response = await fetch(`${API_URL}/repos/repos`, {
             method: 'POST',
+            body: JSON.stringify({ username, pageNumber, reposPerPage }),
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, pageNumber, reposPerPage })
         });
 
         if (!response.ok) throw new Error(response.statusText);
@@ -181,16 +184,17 @@ const gitData = async (e) => {
             
             // Wrap fetchData and fetchRepos calls in try-catch
             try {
+                // console.log(e);
                 await fetchData(username);
             } catch (error) {
-                console.error('Error in fetchData:', error);
+                console.log('Error in fetchData:', error);
                 throw new Error('An error occurred while fetching user data.');
             }
 
             try {
                 await fetchRepos(username);
             } catch (error) {
-                console.error('Error in fetchRepos:', error);
+                // console.error('Error in fetchRepos:', error);
                 throw new Error('An error occurred while fetching repositories.');
             }
 

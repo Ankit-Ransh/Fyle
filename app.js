@@ -5,58 +5,29 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 const axios = require('axios');
 
-const API = "https://api.github.com/users/";
-
-const app = express();
-app.use(express.json());
+const API = "";
 
 // Specify CORS headers as needed
-const corsOptions = {
-    origin: 'https://fyle-bay.vercel.app/', // Replace with your frontend domain
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 204,
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//     // origin: 'https://fyle-bay.vercel.app/', // Replace with your frontend domain
+//     origin: 'http://127.0.0.1:5500/', // Replace with your frontend domain
+//     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+//     credentials: true,
+//     optionsSuccessStatus: 200,
+//     allowedHeaders: ['Content-Type', 'Authorization']
+// };
+app.use(cors());
 
-// CORS middleware
-app.use((req, res, next) => {
-    // Replace '*' with the appropriate origin(s) or configure it dynamically
-    res.setHeader("Access-Control-Allow-Origin", "*");
-
-    // Add other allowed methods as needed
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-
-    // Add other allowed headers as needed
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-    // Handle preflight request
-    if (req.method === "OPTIONS") {
-        return res.sendStatus(200);
-    }
-
-    // Set cache-control headers to prevent caching
-    res.setHeader(
-        "Cache-Control",
-        "no-store, no-cache, must-revalidate, proxy-revalidate"
-    );
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
-
-    next();
-});
-
-app.options('/api/user', cors(corsOptions)); // preflight request for /api/user endpoint
-app.options('/api/repos', cors(corsOptions)); // preflight request for /api/repos endpoint
-app.options('/api/languages', cors(corsOptions)); // preflight request for /api/languages endpoint
+// app.options('/api/user', cors(corsOptions)); // preflight request for /api/user endpoint
+// app.options('/api/repos', cors(corsOptions)); // preflight request for /api/repos endpoint
+// app.options('/api/languages', cors(corsOptions)); // preflight request for /api/languages endpoint
 
 const token = process.env.token;
 
 app.post('/api/user', async (req, res) => {
-    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-    res.setHeader("Pragma", "no-cache");
-    res.setHeader("Expires", "0");
+    // res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    // res.setHeader("Pragma", "no-cache");
+    // res.setHeader("Expires", "0");
     const { username } = req.body;
     const apiUrl = `${API}${username}`;
     
@@ -71,8 +42,9 @@ app.post('/api/user', async (req, res) => {
         });
 
         console.log("userData -> OK");
-        res.json(response.data);
+        res.json(response);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ error: 'Error fetching GitHub user data' });
     }
 });
